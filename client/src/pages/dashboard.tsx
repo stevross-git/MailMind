@@ -56,8 +56,21 @@ export default function Dashboard() {
       }
     }
     
-    // Clear any old mock data and force fresh authentication
-    localStorage.removeItem("user");
+    // Check for existing stored authentication
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        setIsAuthenticated(true);
+        return;
+      } catch (error) {
+        console.error("Failed to parse stored user data:", error);
+        localStorage.removeItem("user");
+      }
+    }
+    
+    // Show authentication modal if no valid user found
     setShowAuthModal(true);
   }, []);
 

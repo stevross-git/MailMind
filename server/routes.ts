@@ -51,35 +51,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // For popup flow, create a simple HTML page that communicates back to parent
+      // Redirect back to dashboard with user data
       const userData = { id: user!.id, email: user!.email, username: user!.username };
-      const htmlResponse = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Authentication Success</title>
-        </head>
-        <body>
-          <script>
-            // Store user data in localStorage for popup communication
-            localStorage.setItem('user', JSON.stringify(${JSON.stringify(userData)}));
-            
-            // Send message to parent window
-            if (window.opener) {
-              window.opener.postMessage({ type: 'OAUTH_SUCCESS', user: ${JSON.stringify(userData)} }, window.location.origin);
-              setTimeout(() => window.close(), 500);
-            } else {
-              // Fallback for direct navigation
-              const userQueryParam = encodeURIComponent(JSON.stringify(${JSON.stringify(userData)}));
-              window.location.href = \`/?user=\${userQueryParam}\`;
-            }
-          </script>
-          <p>Authentication successful! This window will close automatically...</p>
-        </body>
-        </html>
-      `;
-      
-      res.send(htmlResponse);
+      const userQueryParam = encodeURIComponent(JSON.stringify(userData));
+      res.redirect(`/?user=${userQueryParam}`);
     } catch (error) {
       console.error("OAuth callback error:", error);
       res.status(500).send("Authentication failed");
