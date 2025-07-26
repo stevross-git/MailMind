@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+
+  /* Microsoft Theme Colors */
+  --ms-blue: hsl(207, 100%, 42%);
+  --ms-blue-dark: hsl(210, 100%, 35%);
+  --ms-cyan: hsl(194, 100%, 47%);
+  --ms-green: hsl(107, 80%, 26%);
+  --ms-orange: hsl(30, 100%, 50%);
+  --ms-red: hsl(357, 68%, 52%);
+  --ms-gray-100: hsl(50, 11%, 95%);
+  --ms-gray-200: hsl(45, 6%, 77%);
+  --ms-gray-300: hsl(30, 4%, 55%);
+  --ms-gray-400: hsl(24, 3%, 38%);
+  --ms-gray-500: hsl(30, 4%, 20%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+}
+
+@layer components {
+  .ms-blue {
+    background-color: var(--ms-blue);
+  }
+  
+  .ms-blue-dark {
+    background-color: var(--ms-blue-dark);
+  }
+  
+  .text-ms-blue {
+    color: var(--ms-blue);
+  }
+  
+  .text-ms-gray-300 {
+    color: var(--ms-gray-300);
+  }
+  
+  .text-ms-gray-400 {
+    color: var(--ms-gray-400);
+  }
+  
+  .text-ms-gray-500 {
+    color: var(--ms-gray-500);
+  }
+  
+  .bg-ms-gray-100 {
+    background-color: var(--ms-gray-100);
+  }
+  
+  .bg-ms-gray-200 {
+    background-color: var(--ms-gray-200);
+  }
+  
+  .border-ms-gray-200 {
+    border-color: var(--ms-gray-200);
+  }
+  
+  .bg-ms-red {
+    background-color: var(--ms-red);
+  }
+  
+  .text-ms-red {
+    color: var(--ms-red);
+  }
+  
+  .bg-ms-green {
+    background-color: var(--ms-green);
+  }
+  
+  .text-ms-green {
+    color: var(--ms-green);
+  }
+  
+  .bg-ms-orange {
+    background-color: var(--ms-orange);
+  }
+  
+  .text-ms-orange {
+    color: var(--ms-orange);
+  }
+}
