@@ -27,13 +27,19 @@ export default function AuthModal({ isOpen, onClose, onAuthenticate }: AuthModal
           'width=500,height=600,scrollbars=yes,resizable=yes'
         );
         
-        // Listen for the popup to close or receive a message
+        // Listen for the popup to close
         const checkClosed = setInterval(() => {
           if (popup?.closed) {
             clearInterval(checkClosed);
             setIsLoading(false);
-            // Refresh the page to check for authentication
-            window.location.reload();
+            
+            // Check if user was authenticated while popup was open
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+              const userData = JSON.parse(storedUser);
+              onAuthenticate("", userData);
+              onClose();
+            }
           }
         }, 1000);
         
@@ -48,12 +54,19 @@ export default function AuthModal({ isOpen, onClose, onAuthenticate }: AuthModal
             // Store user data and trigger authentication callback
             const userData = event.data.user;
             localStorage.setItem("user", JSON.stringify(userData));
-            onAuthenticate("", userData); // Call the parent callback
-            onClose(); // Close the modal
+            onAuthenticate("", userData);
+            onClose();
           }
         };
         
         window.addEventListener('message', messageListener);
+        
+        // Cleanup function
+        setTimeout(() => {
+          if (popup && !popup.closed) {
+            popup.focus();
+          }
+        }, 100);
       } else {
         throw new Error('Failed to get authentication URL');
       }

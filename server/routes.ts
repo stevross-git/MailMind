@@ -61,10 +61,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         </head>
         <body>
           <script>
+            // Store user data in localStorage for popup communication
+            localStorage.setItem('user', JSON.stringify(${JSON.stringify(userData)}));
+            
             // Send message to parent window
             if (window.opener) {
-              window.opener.postMessage({ type: 'OAUTH_SUCCESS', user: ${JSON.stringify(userData)} }, '*');
-              window.close();
+              window.opener.postMessage({ type: 'OAUTH_SUCCESS', user: ${JSON.stringify(userData)} }, window.location.origin);
+              setTimeout(() => window.close(), 500);
             } else {
               // Fallback for direct navigation
               const userQueryParam = encodeURIComponent(JSON.stringify(${JSON.stringify(userData)}));
