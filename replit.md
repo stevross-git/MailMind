@@ -2,7 +2,8 @@
 
 ## Overview
 
-This is a web-based AI-powered email assistant that integrates with Office 365 via Microsoft Graph API. The application analyzes, organizes, and helps users manage their emails through intelligent categorization and a conversational chat interface.
+This is a web-based AI-powered email assistant that integrates with Office 365 via Microsoft Graph API. The application analyzes, organizes, and helps users manage their emails through intelligent categorization and a conversational chat interface. 
+
 
 ## User Preferences
 
