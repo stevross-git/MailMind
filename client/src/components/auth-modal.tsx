@@ -20,8 +20,40 @@ export default function AuthModal({ isOpen, onClose, onAuthenticate }: AuthModal
       const data = await response.json();
       
       if (data.authUrl) {
-        // Redirect to Microsoft OAuth
-        window.location.href = data.authUrl;
+        // Open Microsoft OAuth in a new window to avoid CORS issues
+        const popup = window.open(
+          data.authUrl,
+          'microsoft-oauth',
+          'width=500,height=600,scrollbars=yes,resizable=yes'
+        );
+        
+        // Listen for the popup to close or receive a message
+        const checkClosed = setInterval(() => {
+          if (popup?.closed) {
+            clearInterval(checkClosed);
+            setIsLoading(false);
+            // Refresh the page to check for authentication
+            window.location.reload();
+          }
+        }, 1000);
+        
+        // Listen for messages from the popup
+        const messageListener = (event: MessageEvent) => {
+          if (event.data.type === 'OAUTH_SUCCESS' && event.data.user) {
+            clearInterval(checkClosed);
+            popup?.close();
+            window.removeEventListener('message', messageListener);
+            setIsLoading(false);
+            
+            // Store user data and trigger authentication callback
+            const userData = event.data.user;
+            localStorage.setItem("user", JSON.stringify(userData));
+            onAuthenticate("", userData); // Call the parent callback
+            onClose(); // Close the modal
+          }
+        };
+        
+        window.addEventListener('message', messageListener);
       } else {
         throw new Error('Failed to get authentication URL');
       }

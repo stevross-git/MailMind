@@ -51,9 +51,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Redirect to frontend with user data
+      // For popup flow, create a simple HTML page that communicates back to parent
       const userData = { id: user!.id, email: user!.email, username: user!.username };
-      res.redirect(`/?user=${encodeURIComponent(JSON.stringify(userData))}`);
+      const htmlResponse = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Authentication Success</title>
+        </head>
+        <body>
+          <script>
+            // Send message to parent window
+            if (window.opener) {
+              window.opener.postMessage({ type: 'OAUTH_SUCCESS', user: ${JSON.stringify(userData)} }, '*');
+              window.close();
+            } else {
+              // Fallback for direct navigation
+              const userQueryParam = encodeURIComponent(JSON.stringify(${JSON.stringify(userData)}));
+              window.location.href = \`/?user=\${userQueryParam}\`;
+            }
+          </script>
+          <p>Authentication successful! This window will close automatically...</p>
+        </body>
+        </html>
+      `;
+      
+      res.send(htmlResponse);
     } catch (error) {
       console.error("OAuth callback error:", error);
       res.status(500).send("Authentication failed");

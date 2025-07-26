@@ -109,20 +109,40 @@ export default function Dashboard() {
     }
   });
 
-  const handleAuthenticate = async (accessToken: string, profile: any) => {
+  const handleAuthenticate = async (accessToken: string, userData: any) => {
     try {
+      // If userData is provided (from popup), use it directly
+      if (userData && userData.id) {
+        setUser(userData);
+        setIsAuthenticated(true);
+        setShowAuthModal(false);
+        
+        // Start initial email sync
+        setTimeout(() => {
+          syncEmailsMutation.mutate();
+        }, 1000);
+        
+        toast({
+          title: "Welcome!",
+          description: "Successfully connected to your Office 365 account.",
+        });
+        
+        return;
+      }
+      
+      // Fallback to API call (legacy)
       const response = await apiRequest("POST", "/api/auth/microsoft", {
         accessToken,
         refreshToken: "refresh_token_placeholder",
-        profile
+        profile: userData
       });
       
       const data = await response.json();
       setUser(data.user);
       setIsAuthenticated(true);
+      setShowAuthModal(false);
       localStorage.setItem("user", JSON.stringify(data.user));
       
-      // Start initial email sync
       setTimeout(() => {
         syncEmailsMutation.mutate();
       }, 1000);
@@ -131,6 +151,7 @@ export default function Dashboard() {
         title: "Welcome!",
         description: "Successfully connected to your Office 365 account.",
       });
+      
     } catch (error) {
       toast({
         title: "Authentication failed",
