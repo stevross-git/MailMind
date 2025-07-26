@@ -3,12 +3,64 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { MicrosoftGraphService } from "./services/microsoftGraph";
 import { OpenAIService } from "./services/openai";
+import { AuthService } from "./services/auth";
 import { insertChatMessageSchema } from "@shared/schema";
 
 const openaiService = new OpenAIService();
+const authService = new AuthService();
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Authentication endpoint
+  // Get Microsoft auth URL
+  app.get("/api/auth/microsoft/url", async (req, res) => {
+    try {
+      const authUrl = await authService.getAuthUrl();
+      res.json({ authUrl });
+    } catch (error) {
+      console.error("Auth URL error:", error);
+      res.status(500).json({ message: "Failed to generate auth URL" });
+    }
+  });
+
+  // Handle OAuth callback
+  app.get("/auth/callback", async (req, res) => {
+    try {
+      const { code } = req.query;
+      
+      if (!code || typeof code !== 'string') {
+        return res.status(400).send("Authorization code is required");
+      }
+
+      const tokenResponse = await authService.exchangeCodeForTokens(code);
+      const profile = await authService.getUserProfile(tokenResponse.accessToken);
+
+      let user = await storage.getUserByMicrosoftId(profile.id);
+      
+      if (!user) {
+        user = await storage.createUser({
+          username: profile.displayName || profile.mail,
+          email: profile.mail,
+          microsoftId: profile.id,
+          accessToken: tokenResponse.accessToken,
+          refreshToken: null, // MSAL handles refresh tokens internally
+        });
+      } else {
+        user = await storage.updateUser(user.id, {
+          accessToken: tokenResponse.accessToken,
+          refreshToken: null, // MSAL handles refresh tokens internally
+          tokenExpiresAt: new Date(Date.now() + (tokenResponse.expiresOn?.getTime() || 3600000)),
+        });
+      }
+
+      // Redirect to frontend with user data
+      const userData = { id: user!.id, email: user!.email, username: user!.username };
+      res.redirect(`/?user=${encodeURIComponent(JSON.stringify(userData))}`);
+    } catch (error) {
+      console.error("OAuth callback error:", error);
+      res.status(500).send("Authentication failed");
+    }
+  });
+
+  // Legacy authentication endpoint (for backward compatibility)
   app.post("/api/auth/microsoft", async (req, res) => {
     try {
       const { accessToken, refreshToken, profile } = req.body;

@@ -26,6 +26,37 @@ export default function Dashboard() {
 
   // Check authentication on mount
   useEffect(() => {
+    // Check for OAuth callback with user data in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userParam = urlParams.get('user');
+    
+    if (userParam) {
+      try {
+        const userData = JSON.parse(decodeURIComponent(userParam));
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem("user", JSON.stringify(userData));
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Start initial email sync
+        setTimeout(() => {
+          syncEmailsMutation.mutate();
+        }, 1000);
+        
+        toast({
+          title: "Welcome!",
+          description: "Successfully connected to your Office 365 account.",
+        });
+        
+        return;
+      } catch (error) {
+        console.error("Failed to parse user data from URL:", error);
+      }
+    }
+    
+    // Check stored authentication
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const userData = JSON.parse(storedUser);

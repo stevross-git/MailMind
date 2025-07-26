@@ -15,23 +15,18 @@ export default function AuthModal({ isOpen, onClose, onAuthenticate }: AuthModal
   const handleMicrosoftLogin = async () => {
     setIsLoading(true);
     try {
-      // In a real implementation, this would integrate with Microsoft Authentication Library (MSAL)
-      // For now, we'll simulate the authentication flow
+      // Get the OAuth URL from the backend
+      const response = await fetch('/api/auth/microsoft/url');
+      const data = await response.json();
       
-      // Mock authentication - in production, replace with actual MSAL integration
-      const mockProfile = {
-        id: "user123",
-        displayName: "John Doe",
-        mail: "john.doe@company.com"
-      };
-      
-      const mockAccessToken = "mock_access_token_" + Date.now();
-      
-      await onAuthenticate(mockAccessToken, mockProfile);
-      onClose();
+      if (data.authUrl) {
+        // Redirect to Microsoft OAuth
+        window.location.href = data.authUrl;
+      } else {
+        throw new Error('Failed to get authentication URL');
+      }
     } catch (error) {
       console.error("Authentication failed:", error);
-    } finally {
       setIsLoading(false);
     }
   };
