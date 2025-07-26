@@ -1,0 +1,138 @@
+💡 Prompt for Replit AI Developer: Web-Based AI Email Organizer (Office 365)
+Project Name: AI Email Organizer for Office 365
+
+🔧 Project Overview
+Build a web-based AI-powered email assistant that connects to a user's Office 365 mailbox via Microsoft Graph API. The app should:
+
+Fetch, read, and analyze emails from the inbox.
+
+Understand the context, urgency, and type of each email.
+
+Organize or suggest actions (archive, label, reply, flag, forward).
+
+Learn from the Sent Items to mimic the user’s writing tone and behavior.
+
+Provide a clean chat-based interface for users to interact with the AI (ask questions like “What are my urgent emails?” or “Draft a reply to this email.”)
+
+🔐 Assumptions
+Azure AD application is already set up with correct Microsoft Graph API permissions (Mail.Read, Mail.Send, offline_access, User.Read, etc.)
+
+OAuth 2.0 auth flow is handled or will be integrated in the backend.
+
+User signs in with Microsoft account and grants access to mailbox.
+
+🔍 Core Functionalities
+🔄 Office 365 Integration
+Use Microsoft Graph API to:
+
+Authenticate users via OAuth
+
+Fetch Inbox, Sent Items, custom folders
+
+Send replies/emails from user account
+
+🧠 AI Capabilities
+Email Classification:
+
+Identify email type: work, meeting, request, reminder, spam
+
+Detect intent: follow-up, RSVP, complaint, opportunity, etc.
+
+Suggested Actions:
+
+Suggest replies (drafts), snooze, categorize, mark as important
+
+Training on Sent Mail:
+
+Analyze Sent Items to extract writing style, tone, common phrases
+
+Fine-tune AI to write similar responses
+
+Store this as a “Persona Embedding” or custom prompt template
+
+📬 Smart Inbox Features
+Flag urgent emails
+
+Auto-label based on rules (e.g., from CEO = Priority)
+
+Show summaries per thread
+
+Conversation view with AI commentary
+
+Ask: “Summarize today’s emails”, “What did I miss?”, “Prepare reply to this thread”
+
+📊 Dashboard Features
+Email breakdown by type, priority, sender
+
+Suggested actions pending review
+
+Stats: unread, important, follow-up items
+
+Voice/text input for chat-like interaction
+
+⚙️ Technical Stack
+Frontend (Replit-compatible)
+HTML/CSS + JS (or React)
+
+Chat-style interface
+
+Mailbox pane (side-by-side layout)
+
+Backend
+Python (Flask or FastAPI)
+
+Microsoft Graph API integration
+
+AI engine using OpenAI / Ollama / custom model
+
+Vector DB (e.g., ChromaDB or FAISS) for memory of sent emails
+
+Optional Redis for caching
+
+🧠 AI Integration Notes
+Email Understanding:
+
+Use OpenAI/GPT-style models with few-shot or fine-tuned examples
+
+Parse email body → detect sentiment, task, urgency
+
+Learning From Sent Mail:
+
+Tokenize + embed historical sent messages
+
+Identify linguistic style (tone, structure, typical open/close)
+
+Generate prompt templates from user tone
+
+🔐 Security & Privacy
+Store tokens securely (encrypted session or vault)
+
+Only user-authorized access to their mailbox
+
+No external sharing of email content
+
+Optional local/offline mode for self-hosted privacy
+
+✅ MVP Checklist
+ Microsoft Login and token handling
+
+ Inbox fetch with context-aware summaries
+
+ Sent mail training with style imitation
+
+ AI reply drafts with editable preview
+
+ Chat-style assistant interface
+
+ Smart tagging and prioritization engine
+
+ Dashboard with email stats and filters
+
+🧠 Example AI Prompts
+“Summarize this email chain and draft a reply.”
+
+“Do I need to reply to this?”
+
+“Rewrite this email in my usual style.”
+
+“What emails did I miss from HR this week?”
