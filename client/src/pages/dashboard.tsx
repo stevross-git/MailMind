@@ -56,15 +56,9 @@ export default function Dashboard() {
       }
     }
     
-    // Check stored authentication
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      setUser(userData);
-      setIsAuthenticated(true);
-    } else {
-      setShowAuthModal(true);
-    }
+    // Clear any old mock data and force fresh authentication
+    localStorage.removeItem("user");
+    setShowAuthModal(true);
   }, []);
 
   // Fetch emails
